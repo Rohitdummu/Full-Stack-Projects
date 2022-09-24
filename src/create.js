@@ -23,7 +23,6 @@ function Example() {
     console.log([data,mat])
     try{
         const resp = await axios.post("http://localhost:3007/createlist",{"title":data,"text":mat})
-        console.log("done",resp)
     }
     catch(err){
         console.log(err)

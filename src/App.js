@@ -11,20 +11,26 @@ function App(){
   const [task,settask] = useState([])
   const [nt, setnt] = useState([])
   const [flg,setflg] = useState(false)
-  useEffect(()=>{
-     axios.get("http://localhost:3007/getlist").then((res)=>{
+  const call = ()=>{
+    axios.get("http://localhost:3007/getlist").then((res)=>{
       settask(res.data.filter((item)=>item.completion===false))
       setnt(res.data.filter((item)=>item.completion===true))
      }).catch((err)=>console.log(err))
-  })
+     console.log("caled")
+  }
+  useEffect(()=>{
+     call()
+  },[])
   // console.log(task)
   const handledelete=(e,a)=>{
     e.preventDefault()
     axios.post(`http://localhost:3007/deletelist/${a}`).then((res)=>setflg(res.data.status)).catch((err)=>console.log(err))
+    call()
   }
   const handlecompletion = async (e,a)=>{
     try{
        await axios.post(`http://localhost:3007/updatelist/${a}`,{"completion":!flg})
+       call()
   }
   catch(err){
       console.log(err)
@@ -33,6 +39,7 @@ function App(){
   const handleincompletion = async (e,a)=>{
     try{
        await axios.post(`http://localhost:3007/updatelist/${a}`,{"completion":flg})
+       call()
   }
   catch(err){
       console.log(err)
@@ -61,7 +68,7 @@ function App(){
                       </Card.Text>
                       {/* <Button variant="info" onClick={(e)=>handleupdate(e,item._id)}>Update</Button>  */}
                       <New data={item} />
-                      <Button variant="danger" className="mx-4" onClick={(e)=>handledelete(e,item._id)}>Delete</Button>
+                      <Button variant="danger" className="mx-2" onClick={(e)=>handledelete(e,item._id)}>Delete</Button>
                       <Button variant="warning" onClick={(e)=>handlecompletion(e,item._id)}>Move To Complete</Button>
                     </Card.Body>
                 </Card>
